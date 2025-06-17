@@ -311,7 +311,7 @@ def test_full_document() -> None:
     )
     line = Line(
         id="line1",
-        type="straight",
+        lineType="straight",
         endpoint1=endpoint1,
         endpoint2=endpoint2,
         stroke=Stroke(

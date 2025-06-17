@@ -19,12 +19,65 @@ pip install lucidpy
 
 ## Usage
 
-Here's a basic example of how to use the library:
+### Basic Example
+
+Create diagrams with automatic ID generation:
 
 ```python
-from lucidpy import LucidchartClient
+from lucidpy import Document, LucidchartClient
 
+# Create a document - IDs are automatically generated!
+doc = Document.create("My Flowchart")
+page = doc.pages[0]
+
+# Add shapes without worrying about IDs
+start = page.add_shape("circle", x=50, y=50, width=60, height=60, text="Start")
+process = page.add_shape("rectangle", x=200, y=40, width=120, height=80, text="Process")
+end = page.add_shape("circle", x=400, y=50, width=60, height=60, text="End")
+
+# Connect shapes
+page.connect_shapes(start, process)
+page.connect_shapes(process, end)
+
+# Upload to Lucidchart
 client = LucidchartClient(api_key='your_api_key')
+client.create_document("My Flowchart", document=doc)
+```
+
+### Layout Utilities
+
+Automatically position shapes in common patterns:
+
+```python
+from lucidpy import Document, LayoutManager
+
+doc = Document.create("Grid Layout")
+page = doc.pages[0]
+
+# Create shapes
+shapes = [page.add_shape("rectangle", text=f"Step {i+1}") for i in range(6)]
+
+# Apply grid layout
+LayoutManager.grid_layout(shapes, columns=3, spacing_x=120, spacing_y=100)
+```
+
+### Builder Pattern
+
+Use the fluent interface for complex diagrams:
+
+```python
+from lucidpy import Document, PageBuilder
+
+doc = Document.create("Workflow")
+page = doc.pages[0]
+
+(PageBuilder(page)
+    .add_rectangle(0, 0, 100, 60, "Start")
+    .add_diamond(150, 0, 80, 80, "Check")
+    .connect_last_two()
+    .add_rectangle(300, 0, 100, 60, "Process")
+    .connect_last_two(text="OK")
+    .build())
 ```
 
 ## Contributing
